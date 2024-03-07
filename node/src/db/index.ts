@@ -5,6 +5,8 @@ import * as schema from "./schema";
 
 export const DATABASE_URL = process.env.DATABASE_URL || "postgres://postgres:postgres@localhost:5432/postgres";
 
+export type DB = Awaited<ReturnType<typeof buildDB>>;
+
 export const buildDB = async () => {
     const client = new Client({
         connectionString: DATABASE_URL,
