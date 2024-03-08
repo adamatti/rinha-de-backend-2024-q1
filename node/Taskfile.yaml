@@ -3,7 +3,7 @@
 version: "3"
 
 vars:
-  DOCKER_TAG: rinha:latest
+  DOCKER_TAG: adamatti/rinha-backend-node-2024-q1:latest
 
 tasks:
   clear:
@@ -70,7 +70,7 @@ tasks:
 
   docker:build:
     cmds:
-      - docker build . -t {{.DOCKER_TAG}}
+      - docker buildx build --platform linux/amd64 -t {{.DOCKER_TAG}} .
   
   docker:sh:
     cmds:
