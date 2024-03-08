@@ -13,6 +13,8 @@ RUN pnpm build
 
 FROM node:21.7-alpine3.19 as runner
 
+ENV NODE_ENV=production
+
 WORKDIR /app
 COPY --from=builder /app/build/handler.js /app/build/handler.js.map ./
 

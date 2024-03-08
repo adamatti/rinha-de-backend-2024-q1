@@ -1,0 +1,6 @@
+build
+node_modules
+
+!Taskfile.yaml
+*.bun-build
+main

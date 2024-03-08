@@ -1,0 +1,91 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+---
+version: "3"
+
+vars:
+  DOCKER_TAG: adamatti/rinha-backend-bun-2024-q1:latest
+  DOCKER_DEFAULT_PLATFORM: linux/amd64
+  DOCKER_BUILDKIT: 0 
+  COMPOSE_DOCKER_CLI_BUILD: 0
+
+tasks:
+  clear:
+    cmds:
+      - rm -rf build
+      - rm -f *.bun-build
+      - rm -f main
+
+  docker-compose:up:
+    desc: start dependencies
+    aliases: [d:u]
+    cmds:
+      - docker-compose up -d
+
+  lint:
+    desc: lint code
+    aliases: [l]
+    cmds:
+      # - npx --yes oxlint@latest
+      - npx --yes @biomejs/biome check --apply .
+
+  type-check:
+    cmds:
+      - bun type-check
+
+  check:
+    desc: check code
+    aliases: [c]
+    cmds: 
+      - task: lint
+      - task: type-check
+
+  run:
+    desc: run as dev
+    aliases: [r]
+    cmds:
+      - task: docker-compose:up
+      - task: lint
+      - task: db:push
+      - task: db:setup
+      - task: run-only
+
+  run-only:
+    desc: run only (no dependencies)
+    aliases: [ro]
+    ignore_error: true
+    env:
+      PORT: 9999
+      NODE_ENV: production
+      # DB_LOGGER: true
+    cmds:
+      - bun src/index.ts
+
+  db:push:
+    desc: apply changes to database
+    cmds:
+      - bun drizzle-kit push:pg
+
+  db:create-migration:
+    cmds:
+      - bun drizzle-kit generate:pg init
+
+  db:setup:
+    desc: setup database
+    aliases: [d:s]
+    cmds:
+      - bun src/db/seed.ts
+
+  docker:build:
+    dir: ../      
+    cmds:
+      - docker buildx build --platform linux/amd64 -t {{.DOCKER_TAG}} -f bun/Dockerfile .
+  
+  docker:sh:
+    cmds:
+      - task: docker:build
+      - docker run --platform linux/amd64 --entrypoint /bin/sh -it --rm {{.DOCKER_TAG}}
+
+  docker:run:
+    cmds:
+      - task: docker:build
+      - docker run --platform linux/amd64 -it --rm  {{.DOCKER_TAG}}

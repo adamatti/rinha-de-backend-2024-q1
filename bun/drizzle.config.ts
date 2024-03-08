@@ -1,0 +1,1 @@
+../node/drizzle.config.ts
