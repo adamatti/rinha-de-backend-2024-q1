@@ -1,5 +1,3 @@
-//import { drizzle } from "drizzle-orm/node-postgres";
-// import { Client } from "pg";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
@@ -14,13 +12,6 @@ export const DATABASE_URL =
 export type DB = Awaited<ReturnType<typeof buildDB>>;
 
 export const buildDB = async () => {
-	/*
-    const client = new Client({
-		connectionString: DATABASE_URL,
-	});
-
-	await client.connect();
-    */
 	const client = postgres(DATABASE_URL, {
 		idle_timeout: 3000,
 		prepare: false,
@@ -30,6 +21,5 @@ export const buildDB = async () => {
 		schema,
 		logger: !!process.env.DB_LOGGER,
 	});
-	// await migrate(db, { migrationsFolder: "../../db" });
 	return db;
 };
