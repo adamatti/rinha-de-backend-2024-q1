@@ -3,7 +3,7 @@
 version: "3"
 
 vars:
-  DOCKER_TAG: adamatti/rinha-backend-bun-2024-q1:latest
+  DOCKER_TAG: ghcr.io/adamatti/rinha-de-backend-2024-q1:bun
   DOCKER_DEFAULT_PLATFORM: linux/amd64
   DOCKER_BUILDKIT: 0 
   COMPOSE_DOCKER_CLI_BUILD: 0
