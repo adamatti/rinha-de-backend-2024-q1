@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+---
+version: "3"
+
+tasks:
+  docker-compose:up:
+    desc: start dependencies
+    aliases: [d:u]
+    cmds:
+      - docker-compose up -d
+
+  lint:
+    desc: lint code
+    aliases: [l]
+    cmds:
+      # - npx --yes oxlint@latest
+      - npx --yes @biomejs/biome check --apply .
+
+  run:
+    desc: run as dev
+    aliases: [r]
+    cmds:
+      - task: lint
+      - task: db:setup
+      - task: run-only
+
+  run-only:
+    desc: run only (no dependencies)
+    aliases: [ro]
+    ignore_error: true
+    env:
+      PORT: 9999
+      NODE_ENV: production
+      # DB_LOGGER: true
+    cmds:
+      - pnpm run --silent dev
+
+  db:push:
+    desc: apply changes to database
+    cmds:
+      - pnpm --silent drizzle-kit push:pg
+
+  db:setup:
+    desc: setup database
+    aliases: [d:s]
+    cmds:
+      - pnpm --silent esno src/db/seed.ts

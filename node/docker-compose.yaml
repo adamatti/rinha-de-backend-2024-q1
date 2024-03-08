@@ -11,9 +11,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./db/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     deploy:
       resources:
         limits:
-          cpus: "0.13"
-          memory: "140MB"
+          cpus: "0.8"
+          memory: "345MB"
