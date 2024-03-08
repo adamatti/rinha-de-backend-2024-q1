@@ -16,6 +16,17 @@ tasks:
       # - npx --yes oxlint@latest
       - npx --yes @biomejs/biome check --apply .
 
+  type-check:
+    cmds:
+      - pnpm --silent type-check
+
+  check:
+    desc: check code
+    aliases: [c]
+    cmds: 
+      - task: lint
+      - task: type-check
+
   run:
     desc: run as dev
     aliases: [r]

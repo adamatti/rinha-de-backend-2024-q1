@@ -20,6 +20,8 @@
   "scripts": {
     "dev": "esno src/index.ts",
     "drizzle-kit": "drizzle-kit",
-    "esno": "esno"
+    "esno": "esno",
+    "tsc": "tsc",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit"
   }
 }
