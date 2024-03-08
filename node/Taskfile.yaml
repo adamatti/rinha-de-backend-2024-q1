@@ -3,7 +3,7 @@
 version: "3"
 
 vars:
-  DOCKER_TAG: adamatti/rinha-backend-node-2024-q1:latest
+  DOCKER_TAG: ghcr.io/adamatti/rinha-de-backend-2024-q1:node
 
 tasks:
   clear:
@@ -76,3 +76,8 @@ tasks:
     cmds:
       - task: docker:build
       - docker run --entrypoint /bin/sh -it {{.DOCKER_TAG}}
+  
+  docker:push:
+    cmds:
+      - task: docker:build
+      - docker push {{.DOCKER_TAG}}
