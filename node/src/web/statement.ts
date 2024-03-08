@@ -7,26 +7,20 @@ export const buildStatement = ({ db }: { db: DB }) => {
 		.select({
 			balance: clientAlias.balance,
 			limit: clientAlias.limit,
-		})
-		.from(clientAlias)
-		.where(eq(clientAlias.id, sql.placeholder("id")));
-
-	const transactionsQuery = db
-		.select({
 			value: transactionAlias.value,
 			description: transactionAlias.description,
 			createdAt: transactionAlias.createdAt,
 		})
-		.from(transactionAlias)
-		.where(eq(transactionAlias.clientId, sql.placeholder("id")))
+		.from(clientAlias)
+		.leftJoin(transactionAlias, eq(transactionAlias.clientId, clientAlias.id))
+		.where(eq(clientAlias.id, sql.placeholder("id")))
 		.orderBy(desc(transactionAlias.id))
-		.limit(10);
+		.limit(10);;
 
 	return async (req: Request<{ id: number }>, res: Response) => {
 		try {
-			const [clients, transactions] = await Promise.all([
+			const [clients] = await Promise.all([
 				clientQuery.execute({ id: req.params.id }),
-				transactionsQuery.execute({ id: req.params.id }),
 			]);
 
 			if (clients.length === 0) {
@@ -34,6 +28,7 @@ export const buildStatement = ({ db }: { db: DB }) => {
 			}
 
 			const [client] = clients;
+			const transactions  = clients.filter((c) => c.value !== null);
 
 			res.json({
 				saldo: {
@@ -42,10 +37,10 @@ export const buildStatement = ({ db }: { db: DB }) => {
 					limite: client.limit,
 				},
 				ultimas_transacoes: (transactions ?? []).map((t) => ({
-					valor: Math.abs(t.value),
-					tipo: t.value > 0 ? "c" : "d",
+					valor: Math.abs(t.value!),
+					tipo: t.value! > 0 ? "c" : "d",
 					descricao: t.description,
-					realizada_em: t.createdAt.toISOString(),
+					realizada_em: t.createdAt!.toISOString(),
 				})),
 			});
 		} catch (error) {
