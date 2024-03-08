@@ -1,7 +1,7 @@
 {
 	"name": "rinha",
-  "module": "src/index.ts",
-  "type": "module",
+	"module": "src/index.ts",
+	"type": "module",
 	"version": "0.0.1",
 	"license": "MIT",
 	"dependencies": {
@@ -20,7 +20,7 @@
 	},
 	"scripts": {
 		"dev": "bun src/index.ts",
-    "build": "bun build ./src/index.ts --outfile main --compile",
+		"build": "bun build ./src/index.ts --outfile main --compile",
 		"drizzle-kit": "drizzle-kit",
 		"esno": "esno",
 		"tsc": "tsc",
