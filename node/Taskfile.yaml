@@ -2,7 +2,14 @@
 ---
 version: "3"
 
+vars:
+  DOCKER_TAG: rinha:latest
+
 tasks:
+  clear:
+    cmds:
+      - rm -rf build
+
   docker-compose:up:
     desc: start dependencies
     aliases: [d:u]
@@ -51,8 +58,21 @@ tasks:
     cmds:
       - pnpm --silent drizzle-kit push:pg
 
+  db:create-migration:
+    cmds:
+      - pnpm drizzle-kit generate:pg init
+
   db:setup:
     desc: setup database
     aliases: [d:s]
     cmds:
       - pnpm --silent esno src/db/seed.ts
+
+  docker:build:
+    cmds:
+      - docker build . -t {{.DOCKER_TAG}}
+  
+  docker:sh:
+    cmds:
+      - task: docker:build
+      - docker run --entrypoint /bin/sh -it {{.DOCKER_TAG}}

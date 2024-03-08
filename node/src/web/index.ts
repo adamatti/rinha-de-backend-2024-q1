@@ -21,6 +21,6 @@ export const buildServer = async ({ db }: { db: DB }) => {
 	});
 
 	app.listen(PORT, async () => {
-		console.log("App started");
+		console.log(`App started on port ${PORT}`);
 	});
 };
