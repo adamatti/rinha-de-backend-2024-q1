@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
-import express, { Request, Response } from "express";
+import express, { type Request, type Response } from "express";
 import { z } from "zod";
-import { DB } from "../db";
+import type { DB } from "../db";
 import { clientAlias, clientTable, transactionTable } from "../db";
 
 const transactionSchema = z.object({

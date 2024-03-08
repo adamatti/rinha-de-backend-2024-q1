@@ -1,5 +1,5 @@
 import express from "express";
-import { DB } from "../db";
+import type { DB } from "../db";
 import { buildStatement } from "./statement";
 import { buildTransactionRoute } from "./transaction";
 

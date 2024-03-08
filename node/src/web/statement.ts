@@ -1,6 +1,6 @@
 import { desc, eq, sql } from "drizzle-orm";
-import { Request, Response } from "express";
-import { DB, clientAlias, transactionAlias } from "../db";
+import type { Request, Response } from "express";
+import { type DB, clientAlias, transactionAlias } from "../db";
 
 export const buildStatement = ({ db }: { db: DB }) => {
 	const clientQuery = db
@@ -15,7 +15,7 @@ export const buildStatement = ({ db }: { db: DB }) => {
 		.leftJoin(transactionAlias, eq(transactionAlias.clientId, clientAlias.id))
 		.where(eq(clientAlias.id, sql.placeholder("id")))
 		.orderBy(desc(transactionAlias.id))
-		.limit(10);;
+		.limit(10);
 
 	return async (req: Request<{ id: number }>, res: Response) => {
 		try {
@@ -28,7 +28,7 @@ export const buildStatement = ({ db }: { db: DB }) => {
 			}
 
 			const [client] = clients;
-			const transactions  = clients.filter((c) => c.value !== null);
+			const transactions = clients.filter((c) => c.value !== null);
 
 			res.json({
 				saldo: {
