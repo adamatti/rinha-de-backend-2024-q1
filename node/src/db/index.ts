@@ -15,7 +15,7 @@ export const buildDB = async () => {
 	const client = postgres(DATABASE_URL, {
 		idle_timeout: 3000,
 		prepare: false,
-		max: 50,
+		max: (process.env.DATABASE_MAX ?? 25) as number,
 	});
 	const db = drizzle(client, {
 		schema,
