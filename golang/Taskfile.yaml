@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+---
+version: "3"
+
+vars:
+  DOCKER_TAG: ghcr.io/adamatti/rinha-de-backend-2024-q1:golang
+  DOCKER_DEFAULT_PLATFORM: linux/amd64
+  DOCKER_BUILDKIT: 0 
+  COMPOSE_DOCKER_CLI_BUILD: 0
+
+
+tasks:
+  run:
+    desc: run
+    aliases: [r]
+    env:
+      PORT: 9999
+      SERVER_HOST: localhost
+    cmds:
+      - go run main.go helpers.go statement.go transaction.go
+
+  fmt:
+    cmds:
+      - go fmt ./...
+
+  lint: 
+    cmds: 
+      - golangci-lint run
+
+  check: 
+    aliases: [c]
+    cmds:
+      - task: fmt
+      - task: lint
+
+  docker:build:
+    cmds:
+      - docker buildx build --platform linux/amd64 -t {{.DOCKER_TAG}} -f Dockerfile .
+  
+  docker:sh:
+    cmds:
+      - task: docker:build
+      - docker run --platform linux/amd64 --entrypoint /bin/sh -it --rm {{.DOCKER_TAG}}
+
+  docker:run:
+    cmds:
+      - task: docker:build
+      - docker run --platform linux/amd64 -it --rm  --network host {{.DOCKER_TAG}}
+
+  docker:push:
+    cmds:
+      - task: docker:build
+      - docker push {{.DOCKER_TAG}}
