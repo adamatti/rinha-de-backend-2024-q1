@@ -2,11 +2,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.3.4"
     id("io.micronaut.aot") version "4.3.4"
-    // id ("io.freefair.lombok") version "5.1.1"
 }
 
 version = "0.1"
-group = "adamatti"
+group = "javamn"
 
 repositories {
     mavenCentral()
@@ -14,22 +13,28 @@ repositories {
 
 dependencies {
     //tag::lombok
-    // compileOnly ("org.projectlombok:lombok:1.18.12")
-    // annotationProcessor("org.projectlombok:lombok:1.18.12")
+    compileOnly ("org.projectlombok:lombok:1.18.12")
+    annotationProcessor("org.projectlombok:lombok:1.18.12")
     //end::lombok
 
-    annotationProcessor("io.micronaut:micronaut-inject-java")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
-    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
-    implementation("io.micronaut.data:micronaut-data-tx-hibernate")
+    annotationProcessor("io.micronaut:micronaut-graal")
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+    implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
-    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
-    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+
+    implementation("io.micronaut.validation:micronaut-validation-processor")
     implementation("io.micronaut.validation:micronaut-validation")
+
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.data:micronaut-data-tx-hibernate")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+
     compileOnly("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("org.postgresql:postgresql:42.3.8")
+    runtimeOnly("org.postgresql:postgresql:42.2.13")
     testImplementation("io.micronaut:micronaut-http-client")
 }
 
@@ -45,16 +50,15 @@ java {
 
 graalvmNative.toolchainDetection.set(false)
 micronaut {
-    ignoredAutomaticDependencies.add("io.micronaut.data:micronaut-data-processor")
     runtime("netty")
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("test.*")
+        annotations("javamn.*")
     }
     aot {
-        // Please review carefully the optimizations enabled below
-        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+    // Please review carefully the optimizations enabled below
+    // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
         optimizeServiceLoading.set(false)
         convertYamlToJava.set(false)
         precomputeOperations.set(true)
