@@ -52,7 +52,11 @@ public class TransactionController {
                 client.getBalance() -body.getValor() <-client.getLimit()
         ) {
             return HttpResponse.unprocessableEntity().body(
-                new ErrorResponse("No funds " + (client.getBalance()), client.getLimit(), client.getBalance())
+                    new ErrorResponse(
+                            "No funds " + (client.getBalance() - body.getValor()),
+                            client.getLimit(),
+                            client.getBalance()
+                    )
             );
         }
 
@@ -61,7 +65,11 @@ public class TransactionController {
         } catch (Throwable t ) {
             if (t.getMessage().contains("current_balance_within_limit")) {
                 return HttpResponse.unprocessableEntity().body(
-                    new ErrorResponse("No funds " + (client.getBalance()), client.getLimit(), client.getBalance())
+                    new ErrorResponse(
+                            "No funds " + (client.getBalance() - body.getValor()),
+                            client.getLimit(),
+                            client.getBalance()
+                    )
                 );
             }
             return HttpResponse.serverError().body(
